@@ -1,7 +1,7 @@
-import { Player } from './types/player';
-import { Point, PointsData, Score } from './types/score';
-// import { none, Option, some, match as matchOpt } from 'fp-ts/Option';
-// import { pipe } from 'fp-ts/lib/function';
+import { isSamePlayer, Player } from './types/player';
+import { advantage, deuce, fifteen, forty, FortyData, game, Point, PointsData, Score, thirty } from './types/score';
+import { none, Option, some, match } from 'fp-ts/Option';
+import { pipe } from 'fp-ts/lib/function';
 
 // -------- Tooling functions --------- //
 
@@ -23,27 +23,46 @@ export const otherPlayer = (player: Player) => {
 };
 // Exercice 1 :
 export const pointToString = (point: Point): string =>
-  'You can use pattern matching with switch case pattern.';
+  point.kind;
 
 export const scoreToString = (score: Score): string =>
-  'You can use pattern matching with switch case pattern.';
+  score.kind;
 
 export const scoreWhenDeuce = (winner: Player): Score => {
-  throw new Error('not implemented');
+  return advantage(winner);
 };
 
 export const scoreWhenAdvantage = (
   advantagedPlayed: Player,
   winner: Player
 ): Score => {
-  throw new Error('not implemented');
+  if (isSamePlayer(advantagedPlayed, winner)) return game(winner);
+  return deuce();
+};
+
+export const incrementPoint = (point: Point): Option<Point> => {
+  switch (point.kind) {
+    case 'LOVE':
+      return some(fifteen());
+    case 'FIFTEEN':
+      return some(thirty());
+    case 'THIRTY':
+      return none;
+  }
 };
 
 export const scoreWhenForty = (
-  currentForty: unknown, // TO UPDATE WHEN WE KNOW HOW TO REPRESENT FORTY
+  currentForty: FortyData,
   winner: Player
 ): Score => {
-  throw new Error('not implemented');
+  if (isSamePlayer(currentForty.player, winner)) return game(winner);
+  return pipe(
+    incrementPoint(currentForty.otherPoint),
+    match(
+      () => deuce(),
+      p => forty(currentForty.player, p) as Score
+    )
+  );
 };
 
 export const scoreWhenGame = (winner: Player): Score => {
@@ -60,3 +79,6 @@ export const scoreWhenPoint = (current: PointsData, winner: Player): Score => {
 export const score = (currentScore: Score, winner: Player): Score => {
   throw new Error('not implemented');
 };
+function matchOpt(arg0: () => import("./types/score").Deuce, arg1: (p: any) => Score): (a: import("fp-ts/lib/Option").None | import("fp-ts/lib/Option").Some<import("./types/score").Fifteen> | import("fp-ts/lib/Option").Some<import("./types/score").Thirty>) => Score {
+  throw new Error('Function not implemented.');
+}
