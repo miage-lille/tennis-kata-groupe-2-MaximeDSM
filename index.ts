@@ -82,6 +82,7 @@ export const scoreWhenPoint = (current: PointsData, winner: Player): Score => {
     switch (current.PLAYER_ONE.kind) {
       case ("LOVE") :
         pointPlayerOne = fifteen();
+        break;
       case ("FIFTEEN") :
         pointPlayerOne = thirty();
     }
@@ -97,6 +98,7 @@ export const scoreWhenPoint = (current: PointsData, winner: Player): Score => {
     switch (current.PLAYER_TWO.kind) {
       case ("LOVE") :
         pointPlayerTwo = fifteen();
+        break;
       case ("FIFTEEN") :
         pointPlayerTwo = thirty();
     }
