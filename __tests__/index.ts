@@ -1,5 +1,6 @@
+import { Points } from './../types/score';
 import { describe, expect, test } from '@jest/globals';
-import { otherPlayer, playerToString, scoreWhenAdvantage, scoreWhenDeuce, scoreWhenForty } from '..';
+import { otherPlayer, playerToString, scoreWhenAdvantage, scoreWhenDeuce, scoreWhenForty, scoreWhenPoint } from '..';
 import * as fc from 'fast-check';
 
 import * as G from './generators';
@@ -84,22 +85,23 @@ describe('Tests for transition functions', () => {
     );
   });
   // -------------------------TESTS POINTS-------------------------- //
-  // test('Given players at 0 or 15 points score kind is still POINTS', () => {
-  // fc.assert(
-  //   fc.property(G.getPoints(), G.getPlayer(), ({ pointsData }, winner) => {
-  //     throw new Error(
-  //       'Your turn to code the preconditions, expected result and test.'
-  //     );
-  //   })
-  // );
-  // });
-  // test('Given one player at 30 and win, score kind is forty', () => {
-  // fc.assert(
-  //   fc.property(G.getPoints(), G.getPlayer(), ({ pointsData }, winner) => {
-  //     throw new Error(
-  //       'Your turn to code the preconditions, expected result and test.'
-  //     );
-  //   })
-  // );
-  // });
+  test('Given players at 0 or 15 points score kind is still POINTS', () => {
+    fc.assert(
+      fc.property(G.getPoints(), G.getPlayer(), ({ pointsData }, winner) => {
+        fc.pre(pointsData.PLAYER_ONE.kind === 'LOVE' || pointsData.PLAYER_ONE.kind === 'FIFTEEN');
+        fc.pre(pointsData.PLAYER_TWO.kind === 'LOVE' || pointsData.PLAYER_TWO.kind === 'FIFTEEN');
+        const score = scoreWhenPoint(pointsData, winner);
+        expect(score.kind).toStrictEqual("POINTS");
+      })
+    );
+  });
+  test('Given one player at 30 and win, score kind is forty', () => {
+    fc.assert(
+      fc.property(G.getPoints(), G.getPlayer(), ({ pointsData }, winner) => {
+        fc.pre((pointsData.PLAYER_ONE.kind === 'THIRTY' && pointsData.PLAYER_TWO.kind !== 'THIRTY') || (pointsData.PLAYER_TWO.kind === 'THIRTY' && pointsData.PLAYER_ONE.kind !== 'THIRTY'));
+        const score = scoreWhenPoint(pointsData, winner);
+        expect(score.kind).toStrictEqual("FORTY");
+      })
+    );
+  });
 });
