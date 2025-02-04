@@ -98,7 +98,7 @@ describe('Tests for transition functions', () => {
   test('Given one player at 30 and win, score kind is forty', () => {
     fc.assert(
       fc.property(G.getPoints(), G.getPlayer(), ({ pointsData }, winner) => {
-        fc.pre((pointsData.PLAYER_ONE.kind === 'THIRTY' && pointsData.PLAYER_TWO.kind !== 'THIRTY') || (pointsData.PLAYER_TWO.kind === 'THIRTY' && pointsData.PLAYER_ONE.kind !== 'THIRTY'));
+        fc.pre((pointsData.PLAYER_ONE.kind === 'THIRTY' && pointsData.PLAYER_TWO.kind !== 'THIRTY' && winner === "PLAYER_ONE") || (pointsData.PLAYER_TWO.kind === 'THIRTY' && pointsData.PLAYER_ONE.kind !== 'THIRTY' && winner === "PLAYER_TWO"));
         const score = scoreWhenPoint(pointsData, winner);
         expect(score.kind).toStrictEqual("FORTY");
       })
