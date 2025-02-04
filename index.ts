@@ -73,7 +73,48 @@ const newGame: Score = points(love(), love());
 // Tip: You can use pipe function from fp-ts to improve readability.
 // See scoreWhenForty function above.
 export const scoreWhenPoint = (current: PointsData, winner: Player): Score => {
-  throw new Error('not implemented');
+  if (current.PLAYER_ONE.kind === "THIRTY" && winner === "PLAYER_ONE") {
+    return forty(winner, current.PLAYER_ONE);
+  } else if (current.PLAYER_TWO.kind === "THIRTY" && winner === "PLAYER_TWO") {
+    return forty(winner, current.PLAYER_TWO);
+  } else if (winner === "PLAYER_ONE") {
+    let pointPlayerOne : Point = love();
+    switch (current.PLAYER_ONE.kind) {
+      case ("LOVE") :
+        pointPlayerOne = fifteen();
+      case ("FIFTEEN") :
+        pointPlayerOne = thirty();
+    }
+    return {
+      kind: 'POINTS',
+      pointsData: {
+        PLAYER_ONE: pointPlayerOne,
+        PLAYER_TWO: current.PLAYER_TWO
+      }
+    }
+  } else if (winner === "PLAYER_TWO") {
+    let pointPlayerTwo : Point = love();
+    switch (current.PLAYER_TWO.kind) {
+      case ("LOVE") :
+        pointPlayerTwo = fifteen();
+      case ("FIFTEEN") :
+        pointPlayerTwo = thirty();
+    }
+    return {
+      kind: 'POINTS',
+      pointsData: {
+        PLAYER_ONE: current.PLAYER_ONE,
+        PLAYER_TWO: pointPlayerTwo
+      }
+    }
+  }
+  return {
+    kind: 'POINTS',
+    pointsData: {
+      PLAYER_ONE: love(),
+      PLAYER_TWO: love()
+    }
+  }
 };
 
 const score = (currentScore: Score, winner: Player): Score => {
